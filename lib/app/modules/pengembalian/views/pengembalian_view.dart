@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import '../controllers/buku_controller.dart';
+import '../controllers/pengembalian_controller.dart';
 
-class BukuView extends GetView<BukuController> {
-  const BukuView({super.key});
+class PengembalianView extends GetView<PengembalianController> {
+  const PengembalianView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BukuView'),
+        title: const Text('PengembalianView'),
         centerTitle: true,
       ),
       body: const Center(
         child: Text(
-          'BukuView is working',
+          'PengembalianView is working',
           style: TextStyle(fontSize: 20),
         ),
       ),

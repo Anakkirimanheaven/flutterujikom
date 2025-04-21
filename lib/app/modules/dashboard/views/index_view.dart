@@ -1,77 +1,121 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
-import 'package:ujikom_flutter/app/data/BukuResponse.dart';
-import 'package:ujikom_flutter/app/modules/buku/controllers/buku_controller.dart';
-import 'package:ujikom_flutter/app/modules/dashboard/views/kategori_view.dart';
-import 'package:zoom_tap_animation/zoom_tap_animation.dart';
+import 'package:ujikom_flutter/app/controllers/index_controller.dart';
+import 'package:ujikom_flutter/app/data/BukuResponse.dart' as br;
+import 'package:ujikom_flutter/app/data/book_detail_response.dart' as bd;
+import 'package:ujikom_flutter/app/modules/dashboard/views/book_detail_view.dart'; // pastikan path ini sesuai ya
 
-class BukuView extends GetView<BukuController> {
-  @override
-  final BukuController controller = Get.put(BukuController());
+class IndexView extends GetView<IndexController> {
+  const IndexView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(IndexController());
+    final String? idUser = GetStorage().read('token');
+
+    if (idUser == null) {
+      return Scaffold(
+        body: const Center(child: Text("User tidak ditemukan, silakan login ulang.")),
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Event List'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Daftar Buku'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            daftarBuku(),
-            daftarBuku(),
-            daftarBuku(),
-            daftarBuku(),
-            daftarBuku(),
-            daftarBuku(),
-            daftarBuku(),
-            daftarBuku(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  ZoomTapAnimation daftarBuku() {
-    return ZoomTapAnimation(
-      onTap: () {
-        Get.to(() => KategoriView(), id: 1);
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            'https://picsum.photos/seed/picsum/200/300',
-            fit: BoxFit.cover,
-            height: 200,
-            width: double.infinity,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'title',
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'description',
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Icon(Icons.location_on, color: Colors.red),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'location',
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return Center(
+              child: Lottie.network(
+                'https://gist.githubusercontent.com/olipiskandar/4f08ac098c81c32ebc02c55f5b11127b/raw/6e21dc500323da795e8b61b5558748b5c7885157/loading.json',
+                repeat: true,
+                width: MediaQuery.of(context).size.width / 1,
               ),
-            ],
-          ),
-          Divider(height: 10),
-          SizedBox(height: 16),
-        ],
+            );
+          }
+
+          if (controller.daftarBuku.isEmpty) {
+            return const Center(child: Text("Tidak ada data"));
+          }
+
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.6,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+            ),
+            itemCount: controller.daftarBuku.length,
+            itemBuilder: (context, index) {
+              // final buku = controller.daftarBuku[index];
+               final br.Buku buku = controller.daftarBuku[index]; // 👉 INI DIAA
+              return GestureDetector(
+                onTap: () {
+                  Get.to(() => BookDetailView(buku: buku));
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                        child: Image.network(
+                          'http://127.0.0.1:8000/images/buku/${buku.image}',
+                          fit: BoxFit.cover,
+                          height: 250,
+                          width: double.infinity,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const SizedBox(
+                              height: 150,
+                              child: Center(child: Text('Image not found')),
+                            );
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              buku.judul ?? '',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${buku.jumlahBuku} Buku tersedia',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        }),
       ),
     );
   }

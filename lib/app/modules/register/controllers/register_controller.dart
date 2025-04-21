@@ -1,15 +1,19 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:ujikom_flutter/app/utils/api.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:ujikom_flutter/app/modules/dashboard/views/dashboard_view.dart';
+import 'package:ujikom_flutter/app/utils/api.dart';
 
 class RegisterController extends GetxController {
-  final _getConnect = GetConnect();
+    final _getConnect = GetConnect();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordConfirmationController = TextEditingController();
+  
+  final RxBool isPasswordVisible = false.obs;
+  final RxBool isConfirmPasswordVisible = false.obs;
+  final RxBool isLoading = false.obs;
   final authToken = GetStorage();
 
   void registerNow() async {
@@ -38,25 +42,24 @@ class RegisterController extends GetxController {
         ),
       );
     }
-  }
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
+    @override
+    void onInit() {
+      super.onInit();
+    }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
+    @override
+    void onReady() {
+      super.onReady();
+    }
 
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    nameController.dispose();
-    passwordConfirmationController.dispose();
-    super.onClose();
+    @override
+    void onClose() {
+      emailController.dispose();
+      passwordController.dispose();
+      nameController.dispose();
+      passwordConfirmationController.dispose();
+      super.onClose();
+    }
   }
 }
-

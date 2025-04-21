@@ -7,10 +7,8 @@ import '../controllers/dashboard_controller.dart';
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     DashboardController controller = Get.put(DashboardController());
-    final ScrollController scrollController = ScrollController();
-
     return Obx(
       () => Scaffold(
         body: Navigator(
@@ -34,11 +32,11 @@ class DashboardView extends GetView<DashboardController> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Index',
+              label: 'Home',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.event),
-              label: 'Your Event',
+              label: 'Borrow',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

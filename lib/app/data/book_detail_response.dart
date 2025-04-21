@@ -1,11 +1,11 @@
-class BookResponse {
+class BookDetailResponse {
   bool? success;
   String? message;
   List<Buku>? buku;
 
-  BookResponse({this.success, this.message, this.buku});
+  BookDetailResponse({this.success, this.message, this.buku});
 
-  BookResponse.fromJson(Map<String, dynamic> json) {
+  BookDetailResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
     if (json['buku'] != null) {
