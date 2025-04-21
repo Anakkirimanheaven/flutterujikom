@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ujikom_flutter/app/data/BukuResponse.dart' as br; // Pastikan path model ini sesuai dengan struktur project kamu
+import 'package:ujikom_flutter/app/data/BukuResponse.dart' as br;
 
 class BookDetailView extends StatelessWidget {
-   final br.Buku buku;
+  final br.Buku buku;
+
   const BookDetailView({super.key, required this.buku});
 
   @override
@@ -21,7 +22,7 @@ class BookDetailView extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  'http://127.0.0.1:8000/images/buku/${buku.image}',
+                  'http://127.0.0.1:8000/images/buku/${buku.fotoBuku}',
                   height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -45,7 +46,7 @@ class BookDetailView extends StatelessWidget {
                 const Icon(Icons.calendar_today, size: 18),
                 const SizedBox(width: 8),
                 Text(
-                  'Tahun Terbit: ${buku.tahunPenerbit ?? '-'}',
+                  'Tahun Terbit: ${buku.tahunTerbit ?? '-'}',
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
@@ -56,7 +57,7 @@ class BookDetailView extends StatelessWidget {
                 const Icon(Icons.library_books, size: 18),
                 const SizedBox(width: 8),
                 Text(
-                  '${buku.jumlahBuku} Buku tersedia',
+                  '${buku.stok ?? 0} Buku tersedia',
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
@@ -68,7 +69,7 @@ class BookDetailView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              buku.desk ?? 'Tidak ada deskripsi.',
+              buku.deskripsi ?? 'Tidak ada deskripsi.',
               style: const TextStyle(fontSize: 16),
             ),
           ],

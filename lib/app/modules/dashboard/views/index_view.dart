@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
-import 'package:ujikom_flutter/app/controllers/index_controller.dart';
+import 'package:ujikom_flutter/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:ujikom_flutter/app/data/BukuResponse.dart' as br;
-import 'package:ujikom_flutter/app/data/book_detail_response.dart' as bd;
-import 'package:ujikom_flutter/app/modules/dashboard/views/book_detail_view.dart'; // pastikan path ini sesuai ya
+import 'package:ujikom_flutter/app/modules/dashboard/views/book_detail_view.dart';
 
-class IndexView extends GetView<IndexController> {
+class IndexView extends StatelessWidget {
   const IndexView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(IndexController());
+    final dashboardController = Get.find<DashboardController>();
     final String? idUser = GetStorage().read('token');
 
     if (idUser == null) {
@@ -29,87 +28,62 @@ class IndexView extends GetView<IndexController> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Obx(() {
-          if (controller.isLoading.value) {
+          if (dashboardController.isLoading.value) {
             return Center(
               child: Lottie.network(
                 'https://gist.githubusercontent.com/olipiskandar/4f08ac098c81c32ebc02c55f5b11127b/raw/6e21dc500323da795e8b61b5558748b5c7885157/loading.json',
                 repeat: true,
-                width: MediaQuery.of(context).size.width / 1,
+                width: MediaQuery.of(context).size.width,
               ),
             );
           }
 
-          if (controller.daftarBuku.isEmpty) {
+          if (dashboardController.bukuList.isEmpty) {
             return const Center(child: Text("Tidak ada data"));
           }
 
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.6,
+              childAspectRatio: 1.4,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
-            itemCount: controller.daftarBuku.length,
+            itemCount: dashboardController.bukuList.length,
             itemBuilder: (context, index) {
-              // final buku = controller.daftarBuku[index];
-               final br.Buku buku = controller.daftarBuku[index]; // 👉 INI DIAA
+              final br.Buku buku = dashboardController.bukuList[index];
+
               return GestureDetector(
-                onTap: () {
-                  Get.to(() => BookDetailView(buku: buku));
-                },
+                onTap: () => Get.to(() => BookDetailView(buku: buku)),
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   elevation: 4,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          buku.judul ?? 'Judul tidak tersedia',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        child: Image.network(
-                          'http://127.0.0.1:8000/images/buku/${buku.image}',
-                          fit: BoxFit.cover,
-                          height: 250,
-                          width: double.infinity,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const SizedBox(
-                              height: 150,
-                              child: Center(child: Text('Image not found')),
-                            );
-                          },
+                        const SizedBox(height: 8),
+                        Text(
+                          '${buku.stok ?? 0} Buku tersedia',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              buku.judul ?? '',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${buku.jumlahBuku} Buku tersedia',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

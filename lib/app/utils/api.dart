@@ -1,5 +1,5 @@
 class BaseUrl {
-  static const String baseUrl = 'http://192.168.0.104:8000';
+  static const String baseUrl = 'http://192.168.122.22:8000';
   static String login = '/api/login';
   static String register= '/api/register';
   static String logout = '/api/logout';

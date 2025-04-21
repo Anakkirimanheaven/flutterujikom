@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:ujikom_flutter/app/data/BukuResponse.dart';
+import 'package:ujikom_flutter/app/data/BukuResponse.dart'; // pastikan ini sudah sesuai
 import 'package:ujikom_flutter/app/modules/dashboard/views/index_view.dart';
 import 'package:ujikom_flutter/app/modules/dashboard/views/profile_view.dart';
 import 'package:ujikom_flutter/app/modules/peminjaman/views/peminjaman_view.dart';
@@ -36,16 +36,16 @@ class DashboardController extends GetxController {
     try {
       isLoading.value = true;
       final response = await _getConnect.get(
-   '${BaseUrl.baseUrl}${BaseUrl.home}',
-     headers: {
+        '${BaseUrl.baseUrl}${BaseUrl.home}',
+        headers: {
           'Authorization': 'Bearer $token',
         },
       );
 
       if (response.statusCode == 200) {
         final decoded = json.decode(response.bodyString!);
-        final bookResponse = BookResponse.fromJson(decoded);
-        bukuList.value = bookResponse.buku ?? [];
+        final bookResponse = bukuResponse.fromJson(decoded);
+        bukuList.value = bookResponse.data ?? [];
       } else {
         Get.snackbar('Error', 'Gagal mengambil data buku');
       }
